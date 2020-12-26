@@ -1,0 +1,51 @@
+### OSX ###
+
+.DS_Store
+
+### Terraform ###
+
+# plan files
+*.plan
+
+# Compiled files
+*.tfstate
+*.tfstate.backup
+*.tfstate.*.backup
+
+# Packer
+packer.log
+*.zip
+terraform/environments/creativegroup-*/*/packer/*.zip
+
+# Unencrypted files:
+openvpn_credentials.tf
+
+# Module directory
+.terraform/
+
+### Visual Studio Code ###
+
+# Configuration directory
+.vscode/
+.idea/
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# mkdocs
+site/
+
+# Node.js
+node_modules/
+
+.idea
+
+bin/terraform
+update-internal-records.zip
+
+# patch rejects
+*.rej
+*.orig

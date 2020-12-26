@@ -67,3 +67,35 @@ I0128 14:59:00.969906       1 aws_manager.go:263] Refreshed ASG list, next refre
 kubectl get node -o yaml | grep pods
 
 aws-vault exec k8s -- aws eks --region eu-west-1 update-kubeconfig --name acceptance
+
+https://docs.aws.amazon.com/eks/latest/userguide/metrics-server.html
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+aws-vault exec k8s -- helm install prometheus prometheus-community/prometheus \
+    --namespace prometheus \
+    --set alertmanager.persistentVolume.storageClass="gp2",server.persistentVolume.storageClass="gp2"
+
+export POD_NAME=$(aws-vault exec k8s -- kubectl get pods --namespace prometheus -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
+
+kubectl create namespace grafana
+
+helm install grafana grafana/grafana \
+    --namespace grafana \
+    --set persistence.storageClassName="gp2" \
+    --set persistence.enabled=true \
+    --set adminPassword='EKS!sAWSome' \
+    --values grafana.yaml \
+    --set service.type=LoadBalancer
+
+  helm repo add grafana https://grafana.github.io/helm-charts
+
+
+
+export ELB=$(aws-vault exec k8s -- kubectl get svc -n grafana grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+
+1860
+
+helm install prometheus-stack prometheus-community/kube-prometheus-stack
