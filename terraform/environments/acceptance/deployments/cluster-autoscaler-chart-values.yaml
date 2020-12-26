@@ -12,3 +12,5 @@ rbac:
 autoDiscovery:
   clusterName: acceptance
   enabled: true
+
+scaleDownDelay: 5m

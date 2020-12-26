@@ -1,14 +1,14 @@
-# get (externally configured) DNS Zone
+# AWS DNS Zone
 data "aws_route53_zone" "base_domain" {
   name = local.dns_base_domain
 }
 
-# create AWS-issued SSL certificate
+# AWS issued SSL certificate
 resource "aws_acm_certificate" "eks_domain_cert" {
   domain_name               = local.dns_base_domain
   subject_alternative_names = ["*.${local.dns_base_domain}"]
   validation_method         = "DNS"
-
+  
   tags = {
     Name            = "${local.dns_base_domain}"
     #iac_environment = var.iac_environment_tag
@@ -34,7 +34,7 @@ resource "aws_acm_certificate_validation" "eks_domain_cert_validation" {
   validation_record_fqdns = [for record in aws_route53_record.eks_domain_cert_validation_dns: record.fqdn]
 }
 
-# deploy Ingress Controller
+# Nginx Ingress Controller
 resource "helm_release" "ingress_gateway" {
   name       = local.ingress_gateway_chart_name
   chart      = local.ingress_gateway_chart_name
@@ -57,12 +57,11 @@ resource "helm_release" "ingress_gateway" {
   }
 }
 
-# create base domain for EKS Cluster
+# base domain for EKS Cluster
 data "kubernetes_service" "ingress_gateway" {
   metadata {
     name = join("-", [helm_release.ingress_gateway.chart, helm_release.ingress_gateway.name])
   }
-
   depends_on = [module.eks_cluster]
 }
 data "aws_elb_hosted_zone_id" "elb_zone_id" {}
@@ -79,9 +78,8 @@ resource "aws_route53_record" "eks_domain" {
   }
 }
 
-resource "aws_route53_record" "deployments_subdomains" {
-  for_each = toset(local.deployments_subdomains)
-
+resource "aws_route53_record" "services_subdomains" {
+  for_each = toset(local.services_subdomains)
   zone_id = data.aws_route53_zone.base_domain.id
   name    = "${each.key}.${aws_route53_record.eks_domain.fqdn}"
   type    = "CNAME"

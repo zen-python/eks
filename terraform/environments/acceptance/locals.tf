@@ -1,5 +1,6 @@
 locals {
   cluster_name                  = "acceptance"
+  env                           = "production"
   k8s_service_account_namespace = "kube-system"
   k8s_service_account_name      = "cluster-autoscaler"
   dns_base_domain               = "aws-eks.be"
@@ -14,5 +15,5 @@ locals {
     "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-connection-idle-timeout" = "60",
     "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"                    = "elb"
   }
-  deployments_subdomains = ["sample", "api"]
+  services_subdomains = ["sample", "api"]
 }

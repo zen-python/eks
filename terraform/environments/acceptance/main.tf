@@ -39,11 +39,15 @@ module "eks_cluster" {
     GithubRepo  = "terraform-aws-eks"
     GithubOrg   = "terraform-aws-modules"
   }
-  
+
   worker_groups = [
       {
         instance_type = "t3.small"
         asg_max_size  = 2
+        root_volume_size = 32
+        root_volume_type = "gp2"
+        root_encrypted = true
+        root_kms_key_id = module.kms_key.key_arn
         tags = [
           {
             "key"                 = "k8s.io/cluster-autoscaler/enabled"

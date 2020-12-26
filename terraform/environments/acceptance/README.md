@@ -71,6 +71,7 @@ aws-vault exec k8s -- aws eks --region eu-west-1 update-kubeconfig --name accept
 https://docs.aws.amazon.com/eks/latest/userguide/metrics-server.html
 
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.4.1/components.yaml
 
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
