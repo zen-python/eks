@@ -48,6 +48,7 @@ module "eks_cluster" {
         root_volume_type = "gp2"
         root_encrypted = true
         root_kms_key_id = module.kms_key.key_arn
+        workers_additional_policies = [module.alb_ingress.alb_iam_role_arn]
         tags = [
           {
             "key"                 = "k8s.io/cluster-autoscaler/enabled"
@@ -64,5 +65,33 @@ module "eks_cluster" {
     ]
 }
 
+module "alb_ingress" {
+  source = "../../modules/eks-alb-ingress"
 
+  cluster_identity_oidc_issuer     = module.eks_cluster.eks_cluster_identity_oidc_issuer
+  cluster_identity_oidc_issuer_arn = module.eks_cluster.eks_cluster_identity_oidc_issuer_arn
+  cluster_name                     = local.cluster_name
+
+  enabled = true
+
+  settings = {
+    "awsVpcID" : module.vpc.vpc_id
+    "awsRegion" : var.region
+  }
+}
+
+# #aws-eks.be
+# module "acm_aws_eks_be" {
+#   source      = "../../modules/acm-certificate"
+#   domain_name = "*.aws-eks.be"
+
+#   subject_alternative_names = [
+#     "aws-eks.be"
+#   ]
+
+#   tags = {
+#     Confidential = "no"
+#     IACTool      = "Terraform"
+#   }
+# }
 

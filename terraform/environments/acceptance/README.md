@@ -100,3 +100,14 @@ export ELB=$(aws-vault exec k8s -- kubectl get svc -n grafana grafana -o jsonpat
 1860
 
 helm install prometheus-stack prometheus-community/kube-prometheus-stack
+
+
+# list all resources
+terraform state list
+
+# remove that resource you don't want to destroy
+# you can add more to be excluded if required
+terraform state rm module.acm_aws_eks_be.aws_acm_certificate.certificate
+
+# destroy the whole stack except above excluded resource(s)
+terraform destroy 
