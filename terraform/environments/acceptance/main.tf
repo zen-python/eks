@@ -4,16 +4,17 @@ data "aws_caller_identity" "current" {}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "2.47.0"
+  version = "2.64.0"
 
-  name                 = "test-vpc"
-  cidr                 = "10.0.0.0/16"
+  name                 = "acceptance-vpc"
+  cidr                 = "10.1.0.0/16"
   azs                  = data.aws_availability_zones.available.names
-  private_subnets      = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets       = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+  private_subnets      = ["10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24"]
+  public_subnets       = ["10.1.4.0/24", "10.1.5.0/24", "10.1.6.0/24"]
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
+  enable_dns_support   = true
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
@@ -35,9 +36,8 @@ module "eks_cluster" {
   enable_irsa     = true
  
   tags = {
-    Environment = "test"
-    GithubRepo  = "terraform-aws-eks"
-    GithubOrg   = "terraform-aws-modules"
+    Environment  = "acceptance"
+    IACTool      = "Terraform"
   }
 
   worker_groups = [
@@ -48,7 +48,7 @@ module "eks_cluster" {
         root_volume_type = "gp2"
         root_encrypted = true
         root_kms_key_id = module.kms_key.key_arn
-        workers_additional_policies = [module.alb_ingress.alb_iam_role_arn]
+  
         tags = [
           {
             "key"                 = "k8s.io/cluster-autoscaler/enabled"
@@ -63,6 +63,7 @@ module "eks_cluster" {
         ]
       }
     ]
+  workers_additional_policies = [module.alb_ingress.iam_policy_arn]
 }
 
 module "alb_ingress" {
