@@ -1,23 +1,31 @@
-// # TODO: make terraform 0.13 compatible
+#--------------------------------------------------------------
+# Terraform Providers
+#--------------------------------------------------------------
+
 terraform {
-  required_version = ">= 0.12.0"
+  required_version = ">= 0.14"
+
+  required_providers {
+    aws        = ">= 3.22"
+    helm       = ">= 1.3"
+    local      = ">= 1.2"
+    null       = ">= 2.1"
+    template   = ">= 2.2"
+    kubernetes = ">= 1.13"
+  }
 }
 
 provider "aws" {
-  version = ">= 2.28.1"
-  region  = var.region
+  region = var.region
 }
 
 provider "local" {
-  version = "~> 1.2"
 }
 
 provider "null" {
-  version = "~> 2.1"
 }
 
 provider "template" {
-  version = "~> 2.1"
 }
 
 data "aws_eks_cluster" "cluster" {
@@ -29,7 +37,6 @@ data "aws_eks_cluster_auth" "cluster" {
 }
 
 provider "kubernetes" {
-  version                = "~> 1.11"
   host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.cluster.token
@@ -37,17 +44,10 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  version = "~> 1.0"
   kubernetes {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-  load_config_file       = false
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+    token                  = data.aws_eks_cluster_auth.cluster.token
+    load_config_file       = false
   }
 }
-
-
-
-
-
-

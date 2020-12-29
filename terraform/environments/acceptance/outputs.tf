@@ -1,3 +1,7 @@
+#--------------------------------------------------------------
+# Outputs
+#--------------------------------------------------------------
+
 output "aws_account_id" {
   value = data.aws_caller_identity.current.account_id
 }
@@ -21,4 +25,3 @@ output "config_map_aws_auth" {
   description = "A kubernetes configuration to authenticate to this EKS cluster."
   value       = module.eks_cluster.config_map_aws_auth
 }
-

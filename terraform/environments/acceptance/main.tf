@@ -1,3 +1,6 @@
+#--------------------------------------------------------------
+# Main VPC / Cluster / Ingress
+#--------------------------------------------------------------
 data "aws_availability_zones" "available" {}
 
 data "aws_caller_identity" "current" {}
@@ -34,40 +37,41 @@ module "eks_cluster" {
   subnets         = module.vpc.public_subnets
   vpc_id          = module.vpc.vpc_id
   enable_irsa     = true
- 
+
   tags = {
-    Environment  = "acceptance"
-    IACTool      = "Terraform"
+    Environment = "acceptance"
+    IACTool     = "Terraform"
   }
 
   worker_groups = [
-      {
-        instance_type = "t3.small"
-        asg_max_size  = 2
-        root_volume_size = 32
-        root_volume_type = "gp2"
-        root_encrypted = true
-        root_kms_key_id = module.kms_key.key_arn
-  
-        tags = [
-          {
-            "key"                 = "k8s.io/cluster-autoscaler/enabled"
-            "propagate_at_launch" = "true"
-            "value"               = "true"
-          },
-          {
-            "key"                 = "k8s.io/cluster-autoscaler/${local.cluster_name}"
-            "propagate_at_launch" = "true"
-            "value"               = "true"
-          }
-        ]
-      }
-    ]
+    {
+      instance_type        = "t3.small"
+      asg_desired_capacity = 1
+      asg_max_size         = 3
+      root_volume_size     = 32
+      root_volume_type     = "gp2"
+      root_encrypted       = true
+      root_kms_key_id      = module.kms_key.key_arn
+
+      tags = [
+        {
+          "key"                 = "k8s.io/cluster-autoscaler/enabled"
+          "propagate_at_launch" = "true"
+          "value"               = "true"
+        },
+        {
+          "key"                 = "k8s.io/cluster-autoscaler/${local.cluster_name}"
+          "propagate_at_launch" = "true"
+          "value"               = "true"
+        }
+      ]
+    }
+  ]
   workers_additional_policies = [module.alb_ingress.iam_policy_arn]
 }
 
 module "alb_ingress" {
-  source = "../../modules/eks-alb-ingress"
+  source = "../../modules/alb-ingress"
 
   cluster_identity_oidc_issuer     = module.eks_cluster.eks_cluster_identity_oidc_issuer
   cluster_identity_oidc_issuer_arn = module.eks_cluster.eks_cluster_identity_oidc_issuer_arn
@@ -95,4 +99,3 @@ module "alb_ingress" {
 #     IACTool      = "Terraform"
 #   }
 # }
-

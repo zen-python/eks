@@ -7,7 +7,7 @@ module "kms_key" {
   policy_template_path = "../../modules/kms/templates/kms-key-policy.tpl"
 
   policy_template_vars = {
-    account_id     = lookup(var.account_ids, local.env)
+    account_id = lookup(var.account_ids, local.env)
   }
 
   description         = "KMS key for environment ${local.env}"
@@ -56,7 +56,7 @@ data "aws_iam_policy_document" "ebs_decryption" {
       type = "AWS"
       identifiers = [
         "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling", # required for the ASG to manage encrypted volumes for nodes
-        module.eks_cluster.cluster_iam_role_arn,                                                                                                            # required for the cluster / persistentvolume-controller to create encrypted PVCs
+        module.eks_cluster.cluster_iam_role_arn,                                                                                                    # required for the cluster / persistentvolume-controller to create encrypted PVCs
       ]
     }
 
@@ -79,7 +79,7 @@ data "aws_iam_policy_document" "ebs_decryption" {
       type = "AWS"
       identifiers = [
         "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling", # required for the ASG to manage encrypted volumes for nodes
-        module.eks_cluster.cluster_iam_role_arn,                                                                                                            # required for the cluster / persistentvolume-controller to create encrypted PVCs
+        module.eks_cluster.cluster_iam_role_arn,                                                                                                    # required for the cluster / persistentvolume-controller to create encrypted PVCs
       ]
     }
 

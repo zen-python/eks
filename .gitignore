@@ -42,7 +42,7 @@ site/
 node_modules/
 
 .idea
-
+.terraform.lock.hcl
 bin/terraform
 update-internal-records.zip
 
