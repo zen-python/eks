@@ -34,7 +34,7 @@ variable "helm_repo_url" {
 }
 
 variable "k8s_namespace" {
-  default     = "kube-system"
+  default     = "alb-ingress"
   description = "The k8s namespace in which the alb-ingress service account has been created"
 }
 

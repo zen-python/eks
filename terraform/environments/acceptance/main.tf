@@ -45,10 +45,10 @@ module "eks_cluster" {
 
   worker_groups = [
     {
-      instance_type        = "t3.small"
-      asg_desired_capacity = 1
+      instance_type        = "t3.xlarge"
+      asg_desired_capacity = 3
       asg_max_size         = 3
-      root_volume_size     = 32
+      root_volume_size     = 100
       root_volume_type     = "gp2"
       root_encrypted       = true
       root_kms_key_id      = module.kms_key.key_arn
