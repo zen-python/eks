@@ -1,3 +1,10 @@
+## Destroy the resources
+kubectl delete -f ../../charts/nginx-ingress/ingress.yaml
+terraform state rm module.alb_ingress.kubernetes_namespace.alb_ingress
+terraform state rm module.alb_ingress.helm_release.alb_ingress
+terraform state rm module.eks_cluster.kubernetes_config_map.aws_auth
+terraform destroy
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
