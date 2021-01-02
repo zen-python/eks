@@ -12,6 +12,7 @@
 *.tfstate.backup
 *.tfstate.*.backup
 
+kubeconfig_*
 # Packer
 packer.log
 *.zip

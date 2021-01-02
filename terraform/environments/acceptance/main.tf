@@ -45,9 +45,9 @@ module "eks_cluster" {
 
   worker_groups = [
     {
-      instance_type        = "t3.xlarge"
-      asg_desired_capacity = 3
-      asg_max_size         = 3
+      instance_type        = "t3.small"
+      asg_desired_capacity = 1
+      asg_max_size         = 2
       root_volume_size     = 100
       root_volume_type     = "gp2"
       root_encrypted       = true
