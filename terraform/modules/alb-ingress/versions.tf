@@ -3,8 +3,8 @@ terraform {
 
   required_providers {
     aws   = ">= 2.0, < 4.0"
-    helm  = ">= 1.0, < 1.4.0"
     local = "~> 2.0"
+    helm  = "< 2.6.1"
     null  = "~> 2.0"
   }
 }
