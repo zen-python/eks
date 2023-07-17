@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws   = "< 4.68"
     local = "~> 2.0"
-    helm  = "< 2.9.1"
+    helm  = "< 2.10.2"
     null  = "~> 3.0"
   }
 }
