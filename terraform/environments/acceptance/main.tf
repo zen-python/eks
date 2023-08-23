@@ -7,7 +7,7 @@ data "aws_caller_identity" "current" {}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "4.0.2"
+  version = "5.1.1"
 
   name                 = "acceptance-vpc"
   cidr                 = "10.1.0.0/16"
